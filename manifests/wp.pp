@@ -12,6 +12,9 @@ define dowordpress::wp (
   $creates = '',
   $onlyif = 'true',
 
+  # install directory (same as init.pp)
+  $exec_dir = '/home/web/.wp-cli',
+
   # end of define arguments
   # ----------------------
   # begin define
@@ -29,7 +32,7 @@ define dowordpress::wp (
   }
   # run wp-cli
   exec { "wp-${title}":
-    path => '/usr/bin:/bin',
+    path => "/usr/bin:/bin:${exec_dir}:/home/${user}/.wp-cli/bin",
     command => "bash -c 'cd ${cwd}; wp ${command}'",
     user => $user,
     group => $group, 
