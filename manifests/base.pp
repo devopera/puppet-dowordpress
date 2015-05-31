@@ -76,7 +76,7 @@ class dowordpress::base (
 
   # install wordpress db
   dowordpress::wp { 'install-wordpress-core' :
-    command => "core install --url=${target_dir}/${target_name} --title=${site_name} --admin_name=${admin_name} --admin_email=${admin_email} --admin_password=${admin_password}",
+    command => "core install --url=${target_dir}/${target_name} --title=${site_name} --admin_name=${admin_user} --admin_email=${admin_email} --admin_password=${admin_password}",
     cwd => "${target_dir}/${target_name}",
     user => $user,
     group => $group,
