@@ -10,7 +10,7 @@ class dowordpress::base (
   # wordpress install details
   $site_name = 'Devopera Wordpress Demo',
   $admin_user = 'admin',
-  $admin_email = 'root@localhost',
+  $admin_email = 'admin@example.com',
   $admin_password = 'admLn**',
 
   # database connection values
@@ -69,7 +69,8 @@ class dowordpress::base (
   # create a database
   # but protect against bug http://bugs.mysql.com/bug.php?id=28331
   domysqldb::command { "dowordpress-create-db-${db_name}" :
-    command => "CREATE DATABASE IF NOT EXISTS `${db_name}`",
+    # don't use daggers here because bash does command substitution on them
+    command => "CREATE DATABASE IF NOT EXISTS ${db_name}",
   }->
   domysqldb::command { "dowordpress-create-user-${db_name}" :
     command => "GRANT ALL ON ${db_name}.* TO '${db_user}'@'${db_host}' IDENTIFIED BY '${db_pass}';",
@@ -83,7 +84,7 @@ class dowordpress::base (
 
   # install wordpress db
   dowordpress::wp { 'install-wordpress-core' :
-    command => "core install --url=${target_dir}/${target_name} --title=${site_name} --admin_name=${admin_user} --admin_email=${admin_email} --admin_password=${admin_password}",
+    command => "core install --url=${target_dir}/${target_name} --title='${site_name}' --admin_user='${admin_user}' --admin_email='${admin_email}' --admin_password='${admin_password}'",
     cwd => "${target_dir}/${target_name}",
     user => $user,
     group => $group,

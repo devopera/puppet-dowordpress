@@ -34,7 +34,7 @@ define dowordpress::wp (
   # run wp-cli
   exec { "wp-${title}":
     path => "/usr/bin:/bin:${exec_dir}:/home/${user}/.wp-cli/bin",
-    command => "bash -c 'cd ${cwd}; ${exec_name} ${command}'",
+    command => "bash -c \"cd ${cwd}; ${exec_name} ${command}\"",
     user => $user,
     group => $group, 
     creates => $creates,
