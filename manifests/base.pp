@@ -67,12 +67,19 @@ class dowordpress::base (
   }->
 
   # create a database
-  mysql::db { "${db_name}":
-    user     => $db_user,
-    password => $db_pass,
-    host     => $db_host,
-    grant    => $db_grants,
+  # but protect against bug http://bugs.mysql.com/bug.php?id=28331
+  domysqldb::command { "dowordpress-create-db-${db_name}" :
+    command => "CREATE DATABASE IF NOT EXISTS `${db_name}`",
   }->
+  domysqldb::command { "dowordpress-create-user-${db_name}" :
+    command => "GRANT ALL ON ${db_name}.* TO '${db_user}'@'${db_host}' IDENTIFIED BY '${db_pass}';",
+  }->
+  # mysql::db { "${db_name}":
+  #   user     => $db_user,
+  #   password => $db_pass,
+  #   host     => $db_host,
+  #   grant    => $db_grants,
+  # }->
 
   # install wordpress db
   dowordpress::wp { 'install-wordpress-core' :
