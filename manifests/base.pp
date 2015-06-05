@@ -47,7 +47,7 @@ class dowordpress::base (
   file { "/home/${user}/${target_name}":
     ensure => 'link',
     target => "${target_dir}/${target_name}",
-  }
+  }->
 
   # create a wp-config file
   file { 'setup-wp-config' :
@@ -63,8 +63,8 @@ class dowordpress::base (
     group => $group,
     repo_source => 'git://github.com/devopera/appconfig-wordpress.git',
     byrepo_filewriteable => { },
-    require => [File['/var/www/git/github.com'], Exec['install-wordpress-source']],
-  }->
+    require => [File['/var/www/git/github.com']],
+  }
 
   # create a database
   # but protect against bug http://bugs.mysql.com/bug.php?id=28331
@@ -84,10 +84,11 @@ class dowordpress::base (
 
   # install wordpress db
   dowordpress::wp { 'install-wordpress-core' :
-    command => "core install --url=${target_dir}/${target_name} --title='${site_name}' --admin_user='${admin_user}' --admin_email='${admin_email}' --admin_password='${admin_password}'",
+    command => "core install --path='${target_dir}/${target_name}' --url='http://localhost/' --title='${site_name}' --admin_user='${admin_user}' --admin_email='${admin_email}' --admin_password='${admin_password}'",
     cwd => "${target_dir}/${target_name}",
     user => $user,
     group => $group,
+    require => File['setup-wp-config'],
   }
 
 }
