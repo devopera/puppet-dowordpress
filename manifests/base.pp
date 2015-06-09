@@ -25,6 +25,9 @@ class dowordpress::base (
   # install directory
   $target_dir = '/var/www/html',
 
+  # don't monitor by default
+  $monitor = false,
+
   # end of class arguments
   # ----------------------
   # begin class
@@ -33,6 +36,13 @@ class dowordpress::base (
 
   # name of first directory in downloaded zip
   $target_name = 'wordpress'
+
+  # monitor if turned on
+  if ($monitor) {
+    class { 'dowordpress::monitor' : 
+      site_name => $site_name, 
+    }
+  }
 
   # create <target_dir>/wordpress folder from downloaded tar (then clean up tar)
   exec { 'install-wordpress-source' :
@@ -88,6 +98,7 @@ class dowordpress::base (
     cwd => "${target_dir}/${target_name}",
     user => $user,
     group => $group,
+    cwd_check => false,
     require => File['setup-wp-config'],
   }
 
